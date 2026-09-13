@@ -1,0 +1,17 @@
+{
+  "name": "jarvis-ai-assistant",
+  "version": "1.0.0",
+  "description": "Futuristic JARVIS AI web assistant powered by Gemini, with a secure serverless backend.",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "vercel": "^37.0.0"
+  }
+}
+
