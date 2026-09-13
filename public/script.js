@@ -1,6 +1,5 @@
 // ===== JARVIS Frontend Logic =====
-// Talks ONLY to our own backend endpoint /api/chat.
-// No API key ever appears in this file.
+// Talks ONLY to our own backend endpoint /api/chat. No API key ever appears here.
 
 const chatWindow = document.getElementById('chatWindow');
 const chatForm = document.getElementById('chatForm');
@@ -8,14 +7,37 @@ const userInput = document.getElementById('userInput');
 const sendBtn = document.getElementById('sendBtn');
 const micBtn = document.getElementById('micBtn');
 const thinkingEl = document.getElementById('thinking');
-const core = document.getElementById('core');
-const coreLabel = document.getElementById('coreLabel');
 const voiceToggle = document.getElementById('voiceToggle');
-const statusText = document.getElementById('statusText');
+const coreStage = document.getElementById('coreStage');
+const activateLabel = document.getElementById('activateLabel');
+const commandBtn = document.getElementById('commandBtn');
+const scanBtn = document.getElementById('scanBtn');
+const chatPanel = document.getElementById('chatPanel');
+const cpuStat = document.getElementById('cpuStat');
 
-// Conversation history sent to backend for context (kept short).
 let history = [];
 let voiceEnabled = true;
+let activated = false;
+
+// ---------- Activation (visual only) ----------
+function activateCore() {
+  if (activated) return;
+  activated = true;
+  coreStage.classList.add('active');
+  activateLabel.textContent = 'Systems nominal. Awaiting input.';
+  chatPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  userInput.focus();
+}
+
+coreStage.addEventListener('click', activateCore);
+activateLabel.addEventListener('click', activateCore);
+commandBtn.addEventListener('click', activateCore);
+
+// Fake fluctuating CPU stat for atmosphere (purely cosmetic).
+setInterval(() => {
+  const val = 30 + Math.floor(Math.random() * 40);
+  if (cpuStat) cpuStat.textContent = `${val}%`;
+}, 2500);
 
 // ---------- Chat rendering ----------
 function addMessage(text, sender) {
@@ -31,15 +53,12 @@ function addMessage(text, sender) {
 
 function setThinking(isThinking) {
   thinkingEl.classList.toggle('hidden', !isThinking);
-  core.classList.toggle('thinking', isThinking);
-  coreLabel.textContent = isThinking
-    ? 'Processing request...'
-    : 'Systems nominal. Awaiting input.';
   sendBtn.disabled = isThinking;
 }
 
 // ---------- Sending messages to backend ----------
 async function sendMessage(message) {
+  activateCore();
   addMessage(message, 'user');
   history.push({ role: 'user', text: message });
   setThinking(true);
@@ -91,14 +110,12 @@ if (SpeechRecognitionAPI) {
   recognition.onstart = () => {
     listening = true;
     micBtn.classList.add('listening');
-    coreLabel.textContent = 'Listening...';
+    activateCore();
   };
 
   recognition.onend = () => {
     listening = false;
     micBtn.classList.remove('listening');
-    if (!thinkingEl.classList.contains('hidden')) return;
-    coreLabel.textContent = 'Systems nominal. Awaiting input.';
   };
 
   recognition.onerror = (event) => {
@@ -118,17 +135,22 @@ if (SpeechRecognitionAPI) {
     if (listening) {
       recognition.stop();
     } else {
-      try {
-        recognition.start();
-      } catch (e) {
-        console.warn(e);
-      }
+      try { recognition.start(); } catch (e) { console.warn(e); }
+    }
+  });
+
+  scanBtn.addEventListener('click', () => {
+    if (listening) {
+      recognition.stop();
+    } else {
+      try { recognition.start(); } catch (e) { console.warn(e); }
     }
   });
 } else {
   micBtn.disabled = true;
   micBtn.title = 'Voice input not supported in this browser';
   micBtn.style.opacity = '0.4';
+  if (scanBtn) scanBtn.disabled = true;
 }
 
 // ---------- Text-to-Speech (voice output) ----------
@@ -136,13 +158,12 @@ function speak(text) {
   if (!voiceEnabled) return;
   if (!('speechSynthesis' in window)) return;
 
-  window.speechSynthesis.cancel(); // stop any current speech
+  window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.rate = 1;
   utterance.pitch = 0.9;
   utterance.lang = 'en-US';
 
-  // Try to pick a clear English voice if available.
   const voices = window.speechSynthesis.getVoices();
   const preferred = voices.find(v => /en-GB|en-US/.test(v.lang) && /male|Daniel|Google UK English Male/i.test(v.name));
   if (preferred) utterance.voice = preferred;
@@ -153,14 +174,11 @@ function speak(text) {
 voiceToggle.addEventListener('click', () => {
   voiceEnabled = !voiceEnabled;
   voiceToggle.classList.toggle('muted', !voiceEnabled);
-  statusText.textContent = voiceEnabled ? 'ONLINE' : 'MUTED';
   if (!voiceEnabled && 'speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }
 });
 
-// Warm up voices list (some browsers load it asynchronously).
 if ('speechSynthesis' in window) {
   window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 }
-  
