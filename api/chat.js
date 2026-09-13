@@ -3,7 +3,7 @@
 // The Gemini API key is read ONLY from the server-side environment variable
 // GEMINI_API_KEY. It is never sent to, or exposed in, the browser.
 
-const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_MODEL = 'gemini-flash-latest';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 const JARVIS_SYSTEM_PROMPT = `You are JARVIS, a highly advanced, futuristic personal AI assistant
