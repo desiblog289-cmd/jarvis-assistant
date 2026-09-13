@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>J.A.R.V.I.S. — AI Assistant</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+
+  <div class="app">
+
+    <header class="header">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <h1>J.A.R.V.I.S.</h1>
+      </div>
+      <div class="header-controls">
+        <button id="voiceToggle" class="icon-btn" title="Toggle voice output" aria-label="Toggle voice output">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12z"/></svg>
+        </button>
+        <span id="statusText" class="status-text">ONLINE</span>
+      </div>
+    </header>
+
+    <main class="main">
+
+      <section class="core-wrap">
+        <div id="core" class="core">
+          <div class="core-ring ring-1"></div>
+          <div class="core-ring ring-2"></div>
+          <div class="core-ring ring-3"></div>
+          <div class="core-center"></div>
+        </div>
+        <p id="coreLabel" class="core-label">Systems nominal. Awaiting input.</p>
+      </section>
+
+      <section class="chat-panel">
+        <div id="chatWindow" class="chat-window">
+          <div class="message jarvis">
+            <div class="bubble">Good day. I am JARVIS, your personal AI assistant. How may I help you today?</div>
+          </div>
+        </div>
+
+        <div id="thinking" class="thinking hidden">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          JARVIS is thinking...
+        </div>
+
+        <form id="chatForm" class="input-bar" autocomplete="off">
+          <button type="button" id="micBtn" class="icon-btn mic-btn" title="Voice input" aria-label="Voice input">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+          </button>
+          <input id="userInput" type="text" placeholder="Speak or type your request..." aria-label="Message JARVIS" />
+          <button type="submit" id="sendBtn" class="send-btn" aria-label="Send message">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+          </button>
+        </form>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <span>JARVIS AI · Powered by Gemini</span>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
