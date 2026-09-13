@@ -1,6 +1,6 @@
-import anthropic
+import google.generativeai as genai
 
-client = anthropic.Anthropic(api_key="YOUR_API_KEY")  # env variable use karna better hai
+genai.configure(api_key="YOUR_GEMINI_API_KEY")
 
 SYSTEM_PROMPT = """
 You are JARVIS, a highly intelligent personal AI assistant.
@@ -11,14 +11,14 @@ LANGUAGE RULE:
 - Keep the tone friendly, warm, and natural.
 """
 
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    system_instruction=SYSTEM_PROMPT
+)
+
 def ask_jarvis(user_input):
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=1000,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": user_input}]
-    )
-    return response.content[0].text
+    response = model.generate_content(user_input)
+    return response.text
 
 if __name__ == "__main__":
     while True:
